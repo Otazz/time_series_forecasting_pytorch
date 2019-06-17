@@ -9,6 +9,7 @@ from src import eval
 from src.ts_decompose import ts_decompose
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 
@@ -114,7 +115,7 @@ if __name__ == "__main__":
     h_test = 1
     batch_size = 32
     epoch = 20
-    METHOD = "RNN"
+    METHOD = "LSTM"
     freq = 8
     lr = 1e-4
     hidden_num = 64
@@ -129,9 +130,9 @@ if __name__ == "__main__":
     print("lr:", lr)
 
     # datasets
-    ts, data = load_data("../data/NSW2013.csv", columnName="TOTALDEMAND")
+    ts, data = load_data("data/NSW2013.csv", columnName="TOTALDEMAND")
     # ts, data = load_data("../data/bike_hour.csv", columnName="cnt")
-    # ts, data = load_data("../data/TAS2016.csv", columnName="TOTALDEMAND")
+    #ts, data = load_data("data/TAS2016.csv", columnName="TOTALDEMAND")
     # ts, data = load_data("../data/traffic_data_in_bits.csv", columnName="value")
     # ts, data = load_data("../data/beijing_pm25.csv", columnName="pm2.5")
     # ts, data = load_data("../data/pollution.csv", columnName="Ozone")
@@ -142,5 +143,13 @@ if __name__ == "__main__":
     #                                            method=METHOD, hidden_num=hidden_num)
 
     testPred, testY = decomposition_model_forecasting(ts=ts, dataset=data, lag=lag, h_train=h_train,  h_test=h_test,
-                                                      epoch=epoch,  lr=lr, use_cuda=True, batch_size=batch_size, freq=freq,
+                                                      epoch=epoch,  lr=lr, use_cuda=False, batch_size=batch_size, freq=freq,
                                                       method=METHOD, hidden_num=hidden_num)
+    print(testPred.shape)
+    plt.hist([testPred[:, 0], testY[:, 0]], bins=40, label=['pred', 'd'])
+    plt.savefig('result_Cas.jpg')
+    plt.clf()
+    plt.plot(testPred[:, 0], label='pred')
+    plt.plot(testY[:, 0], label='d')
+    plt.savefig('dist_Cas.jpg') 
+    plt.show()
