@@ -41,11 +41,11 @@ class CasamentoMult(torch.nn.Module):
 
     def forward(self, d, y):
 
-        d = d.unsqueeze(0)
-        y = y.unsqueeze(0)
+        #d = d.unsqueeze(0)
+        #y = y.unsqueeze(0)
 
-        d = self.toeplitz_like(d, 5).t()
-        y = self.toeplitz_like(y, 5).t()
+        d = self.toeplitz_like(d, 5)
+        y = self.toeplitz_like(y, 5)
 
         self.sqrt_pi = math.sqrt(((2 * math.pi) ** y.shape[1]) * (self.sig ** (2 * y.shape[1])))
 
@@ -68,9 +68,17 @@ class CasamentoMult(torch.nn.Module):
         gaussian = torch.exp(-1/2. * mid) / self.sqrt_pi
         return torch.sum(gaussian) / (y1.shape[1] * y2.shape[1])
 
+    def toeplitz(self, v):
+        vals = torch.cat((torch.flip(v, [0]), v[1:]))
+        a = torch.arange(v.shape[0]).unsqueeze(0).t()
+        b = torch.arange(v.shape[0] - 1, -1, step=-1).unsqueeze(0)
+        indx = a + b
+
+        return vals[indx]
+
     def toeplitz_like(self, x, n):
         r = x
-        stop = x.shape[1] - 1
+        stop = x.shape[0] - 1
 
         if n < stop:
             stop = n
@@ -78,7 +86,6 @@ class CasamentoMult(torch.nn.Module):
         else:
             stop = 2
 
-        for i in range(stop):
-            r = torch.cat((r, x.roll(i+1)), 0)
+        r = self.toeplitz(r)
 
-        return r.narrow(1, stop, x.shape[1] - stop)
+        return r.narrow(1, 0, stop).narrow(0, stop - 1, r.shape[0] - stop)

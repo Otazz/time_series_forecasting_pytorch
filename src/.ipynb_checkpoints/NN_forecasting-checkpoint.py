@@ -130,11 +130,11 @@ if __name__ == "__main__":
     print("lr:", lr)
 
     # datasets
-    ts, data = load_data("data/NSW2013.csv", columnName="TOTALDEMAND")
-    # ts, data = load_data("../data/bike_hour.csv", columnName="cnt")
+    #ts, data = load_data("data/NSW2013.csv", columnName="TOTALDEMAND")
+    #ts, data = load_data("data/bike_hour.csv", columnName="cnt")
     #ts, data = load_data("data/TAS2016.csv", columnName="TOTALDEMAND")
     # ts, data = load_data("../data/traffic_data_in_bits.csv", columnName="value")
-    # ts, data = load_data("../data/beijing_pm25.csv", columnName="pm2.5")
+    ts, data = load_data("data/beijing_pm25.csv", columnName="pm2.5")
     # ts, data = load_data("../data/pollution.csv", columnName="Ozone")
 
     # training and testing
@@ -147,9 +147,9 @@ if __name__ == "__main__":
                                                       method=METHOD, hidden_num=hidden_num)
     print(testPred.shape)
     plt.hist([testPred[:, 0], testY[:, 0]], bins=40, label=['pred', 'd'])
-    plt.savefig('result_Cas.jpg')
+    plt.savefig('result_Cas_bei.jpg')
     plt.clf()
     plt.plot(testPred[:, 0], label='pred')
     plt.plot(testY[:, 0], label='d')
-    plt.savefig('dist_Cas.jpg') 
+    plt.savefig('dist_Cas_bei.jpg') 
     plt.show()
