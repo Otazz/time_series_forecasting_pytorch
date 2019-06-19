@@ -14,7 +14,7 @@ from loss import CasamentoMult
 def train(trainX, trainY,  lag, lr, method, hidden_num=64, epoch=20, batchSize=32,
            checkPoint=10, use_cuda=False):
 
-    lossFilePath = "models/loss_Cas_bei.pkl"
+    lossFilePath = "models/loss_Cas_bei_0.5.pkl"
     output = open(lossFilePath, 'wb')
     lossList = []
 

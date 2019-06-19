@@ -147,9 +147,10 @@ if __name__ == "__main__":
                                                       method=METHOD, hidden_num=hidden_num)
     print(testPred.shape)
     plt.hist([testPred[:, 0], testY[:, 0]], bins=40, label=['pred', 'd'])
-    plt.savefig('result_Cas_bei.jpg')
+    plt.savefig('result_Cas_bei_0.5.jpg')
     plt.clf()
     plt.plot(testPred[:, 0], label='pred')
     plt.plot(testY[:, 0], label='d')
-    plt.savefig('dist_Cas_bei.jpg') 
+    plt.savefig('dist_Cas_bei_0.5.jpg') 
     plt.show()
+    
