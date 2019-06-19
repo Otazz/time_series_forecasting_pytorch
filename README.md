@@ -33,38 +33,18 @@ Requirements
 ## Model compare (beijing pm2.5 data)
 ### MSE
 
-train time: 348.13783407211304
-test pred shape: (10929, 1)
-test MAE 0.0038882897
-test RMSE 0.004629571
-test MAPE 0.9013449773192406
-test SMAPE 0.9034011512994766
-trend_pred shape is (10929, 1)
-res_pred shape is (10929, 1)
-season_pred shape is (10929, 1)
-trend_y shape is (10929, 1)
-res_y shape is (10929, 1)
-season_y shape is (10929, 1)
-test MAE 13.206349
-test RMSE 19.174356
-test MAPE 16175717.1875
-test SMAPE 27.42706835269928
+- train time: 348.13783407211304
+- test pred shape: (10929, 1)
+- test MAE 0.0038882897
+- test RMSE 0.004629571
+- test MAPE 0.9013449773192406
+- test SMAPE 0.9034011512994766
 
 ## Casamento
 
-train time: 406.5106370449066
-test pred shape: (10929, 1)
-test MAE 7.7727476e-05 
-test RMSE 0.00010306614
-test MAPE 0.036181669565849006
-test SMAPE 0.036206579534336925
-trend_pred shape is (10929, 1)
-res_pred shape is (10929, 1)
-season_pred shape is (10929, 1)
-trend_y shape is (10929, 1)
-res_y shape is (10929, 1)
-season_y shape is (10929, 1)
-test MAE 9.998014
-test RMSE 17.786142
-test MAPE 12751557.8125
-test SMAPE 17.39305704832077
+- train time: 406.5106370449066
+- test pred shape: (10929, 1)
+- test MAE 7.7727476e-05 
+- test RMSE 0.00010306614
+- test MAPE 0.036181669565849006
+- test SMAPE 0.036206579534336925
