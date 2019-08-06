@@ -67,13 +67,16 @@ def decomposition_model_forecasting(ts, dataset, lag, h_train, h_test, freq, epo
     print("residual shape is", residual.shape)
 
     # forecasting sub-series independently
-
+    
+    print('Trend')
     trend_pred, trend_y = single_model_forecasting(trend, lag=lag, h_train=h_train, h_test=h_test, epoch=epoch, lr=lr,
                                                    hidden_num=hidden_num, batch_size=batch_size, method=method, use_cuda=use_cuda)
 
+    print('Residual')
     res_pred, res_y = single_model_forecasting(residual, lag=lag, h_train=h_train, h_test=h_test, epoch=epoch, lr=lr,
                                                hidden_num=hidden_num, batch_size=batch_size, method=method, use_cuda=use_cuda)
-
+    
+    print('Season')
     season_pred, season_y = single_model_forecasting(seasonal, lag=lag, h_train=h_train, h_test=h_test, epoch=epoch, lr=lr,
                                                      hidden_num=hidden_num, batch_size=batch_size, method=method, use_cuda=use_cuda)
 
@@ -110,15 +113,15 @@ def decomposition_model_forecasting(ts, dataset, lag, h_train, h_test, freq, epo
 if __name__ == "__main__":
 
     # parameters
-    lag = 24
+    lag = 5
     h_train = 1
     h_test = 1
     batch_size = 32
     epoch = 20
     METHOD = "LSTM"
     freq = 8
-    lr = 1e-4
-    hidden_num = 64
+    lr = 1e-3
+    hidden_num = 32
 
     print("lag:", lag)
     print("batch size", batch_size)
@@ -130,7 +133,7 @@ if __name__ == "__main__":
     print("lr:", lr)
 
     # datasets
-    #ts, data = load_data("data/NSW2013.csv", columnName="TOTALDEMAND")
+    #ts, data = load_data("data/NSW2016.csv", columnName="TOTALDEMAND")
     #ts, data = load_data("data/bike_hour.csv", columnName="cnt")
     #ts, data = load_data("data/TAS2016.csv", columnName="TOTALDEMAND")
     # ts, data = load_data("../data/traffic_data_in_bits.csv", columnName="value")
@@ -141,16 +144,19 @@ if __name__ == "__main__":
     # testPred, testY = single_model_forecasting(data=data, lag=lag, h_train=h_train, h_test=h_test,
     #                                            epoch=epoch,  lr=lr, use_cuda=True, batch_size=batch_size,
     #                                            method=METHOD, hidden_num=hidden_num)
-
-    testPred, testY = decomposition_model_forecasting(ts=ts, dataset=data, lag=lag, h_train=h_train,  h_test=h_test,
-                                                      epoch=epoch,  lr=lr, use_cuda=False, batch_size=batch_size, freq=freq,
-                                                      method=METHOD, hidden_num=hidden_num)
+    testPred, testY = single_model_forecasting(data=data, lag=lag, h_train=h_train, h_test=h_test, lr=lr, epoch=epoch, 
+                                               batch_size=batch_size, hidden_num=hidden_num, method=METHOD, use_cuda=False)
+    #testPred, testY = decomposition_model_forecasting(ts=ts, dataset=data, lag=lag, h_train=h_train,  h_test=h_test,
+    #                                                 epoch=epoch,  lr=lr, use_cuda=False, batch_size=batch_size, freq=freq,
+    #                                                 method=METHOD, hidden_num=hidden_num)
     print(testPred.shape)
     plt.hist([testPred[:, 0], testY[:, 0]], bins=40, label=['pred', 'd'])
-    plt.savefig('result_Cas_bei_0.5.jpg')
+    plt.legend()
+    plt.savefig('result_single_MSE_lr_e3_hid_32_lag_5_bei.jpg')
     plt.clf()
-    plt.plot(testPred[:, 0], label='pred')
+    plt.plot(testPred[:, 0], label='y')
     plt.plot(testY[:, 0], label='d')
-    plt.savefig('dist_Cas_bei_0.5.jpg') 
+    plt.legend()
+    plt.savefig('dist_single_MSE_lr_e3_hid_32_lag_5_bei.jpg') 
     plt.show()
     

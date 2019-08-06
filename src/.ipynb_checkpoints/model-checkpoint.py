@@ -9,7 +9,6 @@ import torch.optim as optim
 from torch.autograd import Variable
 
 
-# RNNs模型基类，主要是用于指定参数和cell类型
 class BaseModel(nn.Module):
 
     def __init__(self, inputDim, hiddenNum, outputDim, layerNum, cell, use_cuda=False):
@@ -36,7 +35,6 @@ class BaseModel(nn.Module):
         self.fc = nn.Linear(self.hiddenNum, self.outputDim)
 
 
-# 标准RNN模型
 class RNNModel(BaseModel):
 
     def __init__(self, inputDim, hiddenNum, outputDim, layerNum, cell, use_cuda):
@@ -56,7 +54,6 @@ class RNNModel(BaseModel):
         return fcOutput
 
 
-# LSTM模型
 class LSTMModel(BaseModel):
 
     def __init__(self, inputDim, hiddenNum, outputDim, layerNum, cell, use_cuda):
@@ -77,7 +74,6 @@ class LSTMModel(BaseModel):
         return fcOutput
 
 
-# GRU模型
 class GRUModel(BaseModel):
 
     def __init__(self, inputDim, hiddenNum, outputDim, layerNum, cell, use_cuda):
@@ -152,7 +148,6 @@ class ResRNN_Cell(nn.Module):
         return output_hiddens
 
 
-# ResRNN模型
 class ResRNNModel(nn.Module):
 
     def __init__(self, inputDim, hiddenNum, outputDim, resDepth, use_cuda=False):
@@ -278,95 +273,7 @@ class RNN_Attention(nn.Module):
 
         return fcOutput
 
-#
-# # attention based ResRNN模型
-# class Attention_ResRNNModel(nn.Module):
-#
-#     def __init__(self, inputDim, hiddenNum, outputDim, resDepth):
-#
-#         super(Attention_ResRNNModel, self).__init__()
-#         self.hiddenNum = hiddenNum
-#         self.inputDim = inputDim
-#         self.outputDim = outputDim
-#         self.layerNum = 1
-#         self.resDepth = resDepth
-#         self.i2h = nn.Linear(self.inputDim, self.hiddenNum, bias=True)
-#         self.h2h = nn.Linear(self.hiddenNum, self.hiddenNum, bias=True)
-#         self.h2o = nn.Linear(self.hiddenNum, self.outputDim, bias=True)
-#         self.fc = nn.Linear(self.hiddenNum, self.outputDim, bias=True)
-#         self.ht2h = nn.Linear(self.hiddenNum, self.hiddenNum, bias=True)
-#
-#         self.attention = nn.Linear(self.att_hiddenNum, 1, bias=True)
-#
-#     def forward(self, x, batchSize):
-#
-#         h0 = Variable(torch.zeros(self.layerNum * 1, batchSize, self.hiddenNum))
-#         inputLen = x.data.size()[1]
-#         ht = h0
-#
-#         hiddenList = []
-#         alphaList = []
-#
-#         for i in range(inputLen):
-#             hn = self.i2h(x[:, i, :]) + self.h2h(h0)
-#
-#             if i == 0:
-#                 hstart = hn
-#             elif i == inputLen-2:
-#                 h0 = nn.Tanh()(hn+hstart)
-#             else:
-#                 if i % self.resDepth == 0:
-#                     h0 = nn.Tanh()(hn + ht)
-#                     ht = hn
-#                 else:
-#                     h0 = nn.Tanh()(hn)
-#
-#             alpha = self.attention(h0)
-#             h = h0.view(batchSize, self.hiddenNum)
-#             hiddenList.append(h)
-#             alphaList.append(alpha)
-#
-#         all_hidden = torch.cat(hiddenList, dim=1)
-#         all_alpha = torch.cat(alphaList, dim=1)
-#         final_vec = all_hidden * all_alpha
-#         final_vec = torch.sum(final_vec, dim=1)
-#         fcOutput = self.fc(final_vec)
-#
-#         return fcOutput
-#
-#
-# # 加入注意机制的RNN模型
-# class AttentionRNNModel(nn.Module):
-#
-#     def __init__(self, inputDim, hiddenNum, outputDim, seqLen):
-#         super(AttentionRNNModel, self).__init__()
-#         self.hiddenNum = hiddenNum
-#         self.inputDim = inputDim
-#         self.outputDim = outputDim
-#         self.layerNum = 1
-#         self.i2h = nn.Linear(self.inputDim, self.hiddenNum, bias=True)
-#         self.h2h = nn.Linear(self.hiddenNum, self.hiddenNum, bias=True)
-#         self.h2o = nn.Linear(self.hiddenNum, self.outputDim, bias=True)
-#         self.fc = nn.Linear(self.hiddenNum*seqLen, self.outputDim, bias=True)
-#         # self.tanh = nn.Tanh()
-#
-#     def forward(self, x, batchSize):
-#         h0 = Variable(torch.zeros(self.layerNum * 1, batchSize, self.hiddenNum))
-#         hiddenList = []
-#         inputLen = x.data.size()[1]
-#         for i in range(inputLen):
-#             hn = self.i2h(x[:, i, :]) + self.h2h(h0)
-#             h0 = nn.Tanh()(hn)
-#             ht = h0.view(batchSize, self.hiddenNum)
-#             hiddenList.append(ht)
-#         flanten = torch.cat(hiddenList, dim=1)
-#
-#         fcOutput = self.fc(flanten)
-#
-#         return fcOutput
-#
 
-# 标准MLP模型
 class MLPModel(nn.Module):
 
     def __init__(self, inputDim, hiddenNum, outputDim):
@@ -384,93 +291,3 @@ class MLPModel(nn.Module):
         output = self.fc2(output)
 
         return output
-
-#
-# # 分解网络
-# class DecompositionNetModel(nn.Module):
-#
-#     def __init__(self, inputDim, fchiddenNum, rnnhiddenNum, outputDim):
-#
-#         super(DecompositionNetModel, self).__init__()
-#         self.fchiddenNum = fchiddenNum
-#         self.rnnhiddenNum = rnnhiddenNum
-#         self.inputDim = inputDim
-#         self.outputDim = outputDim
-#         self.layerNum = 1
-#         self.rnnInputDim = 1
-#
-#         # dropout层
-#         self.drop = nn.Dropout(p=0.3)
-#
-#         # 一维卷积层
-#         self.conv = nn.Conv1d(in_channels=1, out_channels=1, kernel_size=5, stride=1, padding=2,  bias=True)
-#         self.pool = nn.AvgPool1d(kernel_size=5, stride=1, padding=2)
-#         #self.conv.weight.data.fill_(0.2)
-#         self.convWeight = self.conv.weight.data
-#         #print(self.conv.weight.data)
-#
-#         # 全连接层
-#         self.fc1 = nn.Linear(self.inputDim, self.fchiddenNum)
-#         self.fc2 = nn.Linear(self.fchiddenNum, self.inputDim)
-#
-#         # 循环神经网络层
-#         self.rnn1 = nn.RNN(input_size=self.rnnInputDim, hidden_size=self.rnnhiddenNum,
-#                            num_layers=self.layerNum, dropout=0.5,
-#                            nonlinearity="tanh", batch_first=True, )
-#         self.rnn2 = nn.RNN(input_size=self.rnnInputDim, hidden_size=self.rnnhiddenNum,
-#                           num_layers=self.layerNum, dropout=0.5,
-#                           nonlinearity="tanh", batch_first=True, )
-#         self.resrnn1 = ResRNNModel(inputDim=1, hiddenNum=self.rnnhiddenNum, outputDim=1, resDepth=4)
-#         self.resrnn2 = ResRNNModel(inputDim=1, hiddenNum=self.rnnhiddenNum, outputDim=1, resDepth=4 )
-#         self.gru1 = nn.GRU(input_size=self.rnnInputDim, hidden_size=self.rnnhiddenNum,
-#                            num_layers=self.layerNum, dropout=0.0,
-#                            batch_first=True, )
-#         self.gru2 = nn.GRU(input_size=self.rnnInputDim, hidden_size=self.rnnhiddenNum,
-#                            num_layers=self.layerNum, dropout=0.0,
-#                            batch_first=True, )
-#
-#         # 线性输出层
-#         self.fc3 = nn.Linear(self.rnnhiddenNum, self.outputDim)
-#         self.fc4 = nn.Linear(self.rnnhiddenNum, self.outputDim)
-#
-#     def forward(self, x, batchSize):
-#
-#         # 分解网络
-#         x = torch.unsqueeze(x, 1)
-#         #print(x.size())
-#         #x = torch.transpose(x, 1, 2)
-#         # output = self.fc1(x)
-#         # prime = self.fc2(output)
-#         prime = self.conv(x)
-#         #print(prime.size())
-#         prime = self.pool(prime)
-#         #print(prime.size())
-#         residual = x-prime
-#         # prime = torch.unsqueeze(prime, 2)
-#         # residual = torch.unsqueeze(residual, 2)
-#         prime = torch.transpose(prime, 1, 2)
-#         residual = torch.transpose(residual, 1, 2)
-#
-#         h0 = Variable(torch.zeros(self.layerNum * 1, batchSize, self.rnnhiddenNum))
-#
-#         # 预测主成分rnn网络
-#         rnnOutput1, hn1 = self.gru1(prime, h0)  # rnnOutput 12,20,50 hn 1,20,50
-#         hn1 = hn1.view(batchSize, self.rnnhiddenNum)
-#         #hn1 = self.drop(hn1)
-#         fcOutput1 = self.fc3(hn1)
-#         #fcOutput1 = self.resrnn1.forward(prime, batchSize=batchSize)
-#
-#         # 预测残差rnn网络
-#         rnnOutput2, hn2 = self.gru2(residual, h0)  # rnnOutput 12,20,50 hn 1,20,50
-#         hn2 = hn2.view(batchSize, self.rnnhiddenNum)
-#         #hn2 = self.drop(hn2)
-#         fcOutput2 = self.fc4(hn2)
-#         #fcOutput2 = self.resrnn2.forward(prime, batchSize=batchSize)
-#
-#         # 合并预测结果
-#         result = fcOutput1+fcOutput2
-#
-#         return result, fcOutput1, fcOutput2, residual
-#
-#
-
