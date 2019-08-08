@@ -14,7 +14,7 @@ from loss import CasamentoMult
 def train(trainX, trainY,  lag, lr, method, hidden_num=64, epoch=20, batchSize=32,
            checkPoint=10, use_cuda=False):
 
-    lossFilePath = "models/loss_single_MSE_lr_e3_hid_32_lag_5_bei.pkl"
+    lossFilePath = "models/loss_single_Cas_m_2_lr_e3_hid_32_lag_5_bei.pkl"
     output = open(lossFilePath, 'wb')
     lossList = []
 
@@ -40,8 +40,8 @@ def train(trainX, trainY,  lag, lr, method, hidden_num=64, epoch=20, batchSize=3
         net = net.cuda()
     net = net.train()
     optimizer = optim.RMSprop(net.parameters(), lr=lr, momentum=0.9)
-    criterion = nn.MSELoss()
-    #criterion = CasamentoMult(0.75)
+    #criterion = nn.MSELoss()
+    criterion = CasamentoMult(0.75, 2)
     t1 = time.time()
     lossSum = 0
 
@@ -60,10 +60,10 @@ def train(trainX, trainY,  lag, lr, method, hidden_num=64, epoch=20, batchSize=3
             
             zeros = torch.Tensor([0.0001] * y[:, 0].shape[0])
 
-            #pred = net.forward(x)[:,0]
-            #loss = criterion(pred, y[:, 0])
-            pred = net.forward(x)
-            loss = criterion(pred, y)
+            pred = net.forward(x)[:,0]
+            loss = criterion(pred, y[:, 0])
+            #pred = net.forward(x)
+            #loss = criterion(pred, y)
 
             lossSum += loss.item()
             if batch_idx % checkPoint == 0 and batch_idx != 0:

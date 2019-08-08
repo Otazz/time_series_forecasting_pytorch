@@ -35,14 +35,15 @@ class MSEControl(torch.nn.Module):
 
 
 class CasamentoMult(torch.nn.Module):
-    def __init__(self, sig=.5):
+    def __init__(self, sig=.5, m=5):
         super(CasamentoMult, self).__init__()
         self.sig = sig
+        self.m = m
 
     def forward(self, d, y):
 
-        d = self.toeplitz_like(d, 5)
-        y = self.toeplitz_like(y, 5)
+        d = self.toeplitz_like(d, self.m)
+        y = self.toeplitz_like(y, self.m)
 
         self.sqrt_pi = math.sqrt(((2 * math.pi) ** y.shape[1]) * (self.sig ** (2 * y.shape[1])))
 

@@ -152,11 +152,11 @@ if __name__ == "__main__":
     print(testPred.shape)
     plt.hist([testPred[:, 0], testY[:, 0]], bins=40, label=['pred', 'd'])
     plt.legend()
-    plt.savefig('result_single_MSE_lr_e3_hid_32_lag_5_bei.jpg')
+    plt.savefig('result_single_Cas_m_2_lr_e3_hid_32_lag_5_bei.jpg')
     plt.clf()
     plt.plot(testPred[:, 0], label='y')
     plt.plot(testY[:, 0], label='d')
     plt.legend()
-    plt.savefig('dist_single_MSE_lr_e3_hid_32_lag_5_bei.jpg') 
+    plt.savefig('dist_single_Cas_m_2_lr_e3_hid_32_lag_5_bei.jpg') 
     plt.show()
     
